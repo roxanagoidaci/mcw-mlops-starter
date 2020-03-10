@@ -21,6 +21,8 @@ from azureml.core.dataset import Dataset
 from azureml.core.datastore import Datastore
 from azureml.core.model import Model
 
+import onnxmltools
+
 print("Executing train.py")
 print("As a data scientist, this is where I write my training code.")
 print("Azure Machine Learning SDK version: {}".format(azureml.core.VERSION))
@@ -237,9 +239,21 @@ print("Saving model files...")
 # files saved in the "./outputs" folder are automatically uploaded into run history
 os.makedirs('./outputs/model', exist_ok=True)
 # save model
-model.save('./outputs/model/model.h5')
+#model.save('./outputs/model/model.h5')
+
+
+
+# Convert the Keras model to ONNX
+onnx_model_name = 'model.onnx'
+converted_model = onnxmltools.convert_keras(model, onnx_model_name, target_opset=7)
+
+print('Model exported in ONNX format...')
+
+# Save the model locally...
+onnxmltools.utils.save_model(converted_model, './outputs/model/model.onnx')
 print("model saved in ./outputs/model folder")
 print("Saving model files completed.")
+
 
 #-------------------------------------------------------------------
 #
@@ -257,7 +271,7 @@ run.log(model.metrics_names[1], evaluation_metrics[1], 'Model test data accuracy
 
 #-------------------------------------------------------------------
 #
-# Register the model the model
+# Register the model
 #
 #-------------------------------------------------------------------
 
@@ -267,7 +281,7 @@ os.chdir("./outputs/model")
 
 model_description = 'Deep learning model to classify the descriptions of car components as compliant or non-compliant.'
 model = Model.register(
-    model_path='model.h5',  # this points to a local file
+    model_path='model.onnx',  # this points to a local file
     model_name=args.model_name,  # this is the name the model is registered as
     tags={"type": "classification", "run_id": run.id, "build_number": args.build_number},
     description=model_description,

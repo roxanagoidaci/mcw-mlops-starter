@@ -4,6 +4,7 @@ import numpy as np
 from keras.models import load_model
 from azureml.core.model import Model
 from azureml.monitoring import ModelDataCollector
+import onnxruntime
 
 def init():
     global model
@@ -14,12 +15,14 @@ def init():
         print('Looking for model path for model: ', model_name)
         model_path = Model.get_model_path(model_name = model_name)
         print('Loading model from: ', model_path)
-        model = load_model(model_path)
-        print("Model loaded from disk.")
-        print(model.summary())
+        # Load the ONNX model
+        model = onnxruntime.InferenceSession(model_path)
+        print('Model loaded...')
 
         inputs_dc = ModelDataCollector("model_telemetry", designation="inputs")
         prediction_dc = ModelDataCollector("model_telemetry", designation="predictions", feature_names=["prediction"])
+
+
     except Exception as e:
         print(e)
         
@@ -31,7 +34,13 @@ def run(raw_data):
         
         inputs = json.loads(raw_data)     
         inputs = np.array(inputs).reshape(-1, 100)
-        results = model.predict(inputs).reshape(-1)
+
+        input_data = np.array(json.loads(raw_data)).astype(np.float32)
+       
+        #results = model.predict(inputs).reshape(-1)
+
+        results = model.run(None, {model.get_inputs()[0].name:input_data})[0]
+        results = result[0][0].item()
 
         inputs_dc.collect(inputs) #this call is saving our input data into Azure Blob
         prediction_dc.collect(results) #this call is saving our output data into Azure Blob
@@ -44,3 +53,4 @@ def run(raw_data):
         error = str(e)
         print("ERROR: " + error + " " + time.strftime("%H:%M:%S"))
         return error
+

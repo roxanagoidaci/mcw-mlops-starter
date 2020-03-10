@@ -68,7 +68,9 @@ run_amlcompute.environment.python.conda_dependencies = CondaDependencies.create(
     'tensorflow==2.0.0',
     'keras==2.3.1',
     'azureml-sdk',
-    'azureml-dataprep[pandas]'
+    'azureml-dataprep[pandas]',
+    'onnxmltools==1.4.1',
+    'onnxruntime==1.0.0'
 ])
 
 scripts_folder = 'scripts'
