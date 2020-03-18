@@ -32,14 +32,9 @@ def run(raw_data):
     try:
         print("Received input: ", raw_data)
         
-        inputs = json.loads(raw_data)     
-        inputs = np.array(inputs).reshape(-1, 100)
-
-        input_data = np.array(json.loads(raw_data)).astype(np.float32)
+        inputs = np.array(json.loads(raw_data)).astype(np.float32)
        
-        #results = model.predict(inputs).reshape(-1)
-
-        results = model.run(None, {model.get_inputs()[0].name:input_data})[0]
+        results = model.run(None, {model.get_inputs()[0].name:inputs})[0]
         results = results[0][0].item()
 
         inputs_dc.collect(inputs) #this call is saving our input data into Azure Blob
