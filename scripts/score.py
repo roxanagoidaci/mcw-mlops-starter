@@ -40,7 +40,7 @@ def run(raw_data):
         #results = model.predict(inputs).reshape(-1)
 
         results = model.run(None, {model.get_inputs()[0].name:input_data})[0]
-        results = result[0][0].item()
+        results = results[0][0].item()
 
         inputs_dc.collect(inputs) #this call is saving our input data into Azure Blob
         prediction_dc.collect(results) #this call is saving our output data into Azure Blob
