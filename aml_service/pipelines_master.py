@@ -70,7 +70,8 @@ run_amlcompute.environment.python.conda_dependencies = CondaDependencies.create(
     'azureml-sdk',
     'azureml-dataprep[pandas]',
     'onnxmltools==1.6.0',
-    'onnxruntime==1.2.0'
+    'onnxruntime==1.2.0',
+    'tf2onnx==1.5.5'
 ])
 
 scripts_folder = 'scripts'
