@@ -120,7 +120,8 @@ with open(aks_webservice_filepath, "w") as f:
 print("Done saving aks_webservice.json!")
 
 # Single test data
-test_data = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 2, 5, 6, 4, 3, 1, 34]]
+test_data =[['manufactured in 2016 made of plastic in good condition']]
+
 # Call the webservice to make predictions on the test data
 prediction = service.run(json.dumps(test_data))
 print('Test data prediction: ', prediction)
